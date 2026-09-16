@@ -7,8 +7,6 @@ cd "$(dirname "$0")/.."
 if [ ! -f .env ]; then
   echo "No .env file found. Copying .env.example → .env"
   cp .env.example .env
-  echo "Edit .env with your Reddit credentials, then re-run this script."
-  exit 1
 fi
 
 if [ ! -d .venv ]; then
@@ -19,6 +17,6 @@ fi
 source .venv/bin/activate
 pip install -q -r requirements.txt
 
-export $(grep -v '^#' .env | xargs)
+export $(grep -v '^#' .env | grep '=' | sed 's/#.*//' | xargs)
 
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
